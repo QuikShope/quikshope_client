@@ -1,0 +1,19 @@
+{
+    "name": "quikshope_client",
+    "repository": "GiantsMeet/quikshope_client",
+    "description": "query-string parser / stringifier with nesting support",
+    "version": "1.0.1",
+    "keywords": [],
+    "main": "lib/index.js",
+    "scripts": [
+        "lib/index.js",
+        "lib/auth.js",
+        "lib/config.js",
+        "lib/customer.js",
+        "lib/helper.js",
+        "lib/inventory.js",
+        "lib/order.js",
+        "lib/shop.js"
+    ],
+    "license": "BSD-3-Clause"
+}

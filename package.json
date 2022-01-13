@@ -1,15 +1,27 @@
 {
   "name": "quikshope_client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "QuikShope Client for frontend theme development",
+  "homepage": "https://github.com/GiantsMeet/quikshope_client",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GiantsMeet/quikshope_client.git"
+  },
   "main": "lib/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run dist && npm run uglify",
+    "dist": "mkdirp dist && browserify --standalone QuikShope lib/index.js > dist/client.js",
+    "uglify": "uglifyjs dist/client.js > dist/client.min.js"
   },
   "author": "Tanmoy Sarkar",
-  "license": "MIT",
+  "license": "BSD -3-Clause",
   "dependencies": {
     "axios": "^0.24.0",
     "qs": "^6.10.3"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.0",
+    "mkdirp": "^1.0.4",
+    "uglify-js": "^3.14.5"
   }
 }
