@@ -1,0 +1,15 @@
+{
+  "name": "quikshope_client",
+  "version": "1.0.0",
+  "description": "QuikShope Client for frontend theme development",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tanmoy Sarkar",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "qs": "^6.10.3"
+  }
+}
