@@ -71,7 +71,7 @@ Process flow for authentication
 2. Verify OTP [If failed, resent OTP]
 3. Generate Auth Token or Generate Customer Object
 
-- ##### Create AuthenticateUser object
+- #### Create AuthenticateUser object
 The 10 digit phone number of customer without country code need to be pass as arguments.
 > Note : If the customer has not any account, account will be created , there is no need to check existance of customer account
 
@@ -80,9 +80,9 @@ const auth = new client.authenticate("9999999999")
 ```
 
 - #### Send OTP
-	```js
+```js
 await auth.sendOtp()
-    ```
+```
 In return , we will receive a list of two items in the below format
 ```
 [success (boolean), message(string)]
