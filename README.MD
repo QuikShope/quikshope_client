@@ -31,6 +31,16 @@ ShopConfig | Store information of shop like , shop is force closed or not , open
 ShopPromoCode | Holds information for promo code available to apply . It holds the code, discount details and its description [**SHOP**]
 Shop | Main Class which hold all the details related to a shop. [**SHOP**]
 
+### Install QuikShope Client Library
+Install by npm
+```bash
+npm install git@github.com:GiantsMeet/quikshope_client.git
+```
+To install directly in HTML to use directly, use the cdn link provided below
+```js
+<script srdc="https://cdn.jsdelivr.net/gh/GiantsMeet/quikshope_client@main/dist/client.min.js"></script>
+```
+
 ### Import Library
 
 In case of NodeJS / Frontend framework , the standard ES5 & ES6 import strategy will work
@@ -40,9 +50,14 @@ const client = require("quikshope_client")
 
 // For type "commonjs"
 import client from "quikshope_client"
+
+// For HTML javascript
+let client = QuikShopeClient;
 ```
-To import directly in HTML, use the cdn link provided below
+
+### Initialize Library
+For initialization, the username of the shop needed , that can be found in dashboard of seller
 ```js
-<script srdc="https://cdn.jsdelivr.net/gh/GiantsMeet/quikshope_client@main/dist/client.min.js"></script>
+client.init("shop2")
 ```
 
