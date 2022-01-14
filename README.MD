@@ -73,7 +73,7 @@ Process flow for authentication
 2. Verify OTP [If failed, resent OTP]
 3. Generate Auth Token or Generate Customer Object
 
-- #### Create AuthenticateUser object
+#### Create AuthenticateUser object
 The 10 digit phone number of customer without country code need to be pass as arguments.
 > Note : If the customer has not any account, account will be created , there is no need to check existance of customer account
 
@@ -81,7 +81,7 @@ The 10 digit phone number of customer without country code need to be pass as ar
 const auth = new client.authenticate("9999999999")
 ```
 
-- #### Send OTP
+#### Send OTP
 ```js
 await auth.sendOtp()
 ```
@@ -91,7 +91,7 @@ In return , we will receive a list of two items in the below format
 ```
 If success is true that's indicate OTP has been sent , in same way we will get message which can be shown to the user
 
-- #### Send OTP
+#### Send OTP
 ```js
 await auth.sendOtp()
 ```
@@ -101,7 +101,7 @@ In return , we will receive a list of two items in the below format
 ```
 If success is true that's indicate OTP has been sent , in same way we will get message which can be shown to the user
 
-- #### Resend OTP
+#### Resend OTP
 ```js
 await auth.resendOtp()
 ```
@@ -111,7 +111,7 @@ In return , we will receive a list of two items in the below format
 ```
 If success is true that's indicate OTP has been resent , in same way we will get message which can be shown to the user
 
-- #### Verify OTP
+#### Verify OTP
 It takes 6 digit otp as parameter
 ```js
 await auth.verifyOtp("111111")
@@ -123,7 +123,7 @@ In return , we will receive a list of two items in the below format
 If success is true that's indicate OTP has been verified so that we can proceed for generate auth token or customer object , in same way we will get message which can be shown to the user
 
 
-- #### Generate Auth Token
+#### Generate Auth Token
 ```js
 await auth.generateToken()
 ```
@@ -139,7 +139,7 @@ If success is true that's indicate user has been verified through otp verificati
 	3. IndexedDB
 
 
-- #### Generate Customer Object
+#### Generate Customer Object
 ```js
 await auth.generateTokenAndCustomerDetils()
 ```
