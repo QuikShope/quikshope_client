@@ -203,17 +203,97 @@ In return , we will receive a list of two items in the below format
 If success is true that's indicating that customer details has been updated successfully , in same way we will get message which can be shown to the user.
 
 #### Fetch All Orders
+```js
+await customer.fetchAllOrders()
+```
+In return , we will receive a list of three items in the below format
+```
+[success (boolean), message(string), List<Order>]
+```
 #### Get Particular Order By ID
+Pass order id as argument
+
+```js
+await customer.getOrderById(1)
+```
+In return , we will receive a list of three items in the below format
+```
+[success (boolean), message(string), Order]
+```
 #### Checkout
+For checkout we need to collect the checkout details
+- Instance of Shop
+- Products cart map [Preferred format below]
+
+```js
+// Schema
+{
+	"<product_id>" : quantity
+}
+// Example
+{
+    "1": 1,
+    "2": 8,
+    "6": 5
+}
+```
+- Promo code
+- Delivery mode [home_delivery, self_pickup, table_order, advanced_table_order]
+- Payment mode [pod or online]
+- Table Id [Required for tale_order / advanced_table_order]
+- Table Time Slot [Required for advanced_table_order]
+- Table Order Date [Required for advanced_table_order]
+
+```js
+await customer.checkout(shop, {
+    "1": 1,
+    "2": 8,
+    "6": 5
+}, "YTUI", "home_delivery", "online", "" , "", "")
+```
+In return , we will receive a list of three items in the below format
+```
+[success (boolean), message(string), data(JSON)]
+```
+
+In JSON response, `online_payment_redirection` is `true`, then redirect user to `redirection_link` for payment. If `online_payment_redirection` is `false` , then either redirect user to `redirection_link` as default order confirmation page or fetch order details by `order_id` and show custom UI
+
+
 
 - - -
 
 
 ### Product [Class]
+Data members
+- id
+- category_id
+- title
+- images [List of images in multiple sizes and format]
+- price
+- discounted_price
+- dicount_percentage
+- description
+- in_stock
+- is_pinned
 
 - - -
 
 ### ProductCategory [Class]
+Data members
+- id
+- picture
+- title
+
+Functions
+- fetchProducts : Will fetch all the product under this category
+
+```js
+await category.fetchProducts()
+```
+In return we will get
+```
+[status(boolean), message(string), List<Product>]
+```
 
 - - -
 
@@ -222,6 +302,59 @@ If success is true that's indicating that customer details has been updated succ
 - - -
 
 ### Inventory
+#### Fetch All Categories
+```js
+await client.inventory.FetchAllCategroies()
+```
+In return
+```
+[status(boolean), message(string), List<ProductCategory>]
+```
+
+#### Get Category By ID
+```js
+await client.inventory.GetCategoryById("category_id")
+```
+In return
+```
+[status(boolean), message(string), ProductCategory]
+```
+
+#### Fetch All Products
+```js
+await client.inventory.FetchAllProducts()
+```
+In return
+```
+[status(boolean), message(string), List<ProductCategory>, List<Product>]
+```
+
+#### Get Product By Id
+```js
+await client.inventory.FetchAllProducts()
+```
+In return
+```
+[status(boolean), message(string), Product]
+```
+
+#### Search Products By Query
+```js
+await client.inventory.SearchProducts("boat headphone")
+```
+In return
+```
+[status(boolean), message(string), List<ProductCategory>, List<Product>]
+```
+
+#### Filter Products By Selected Products Ids
+```js
+await client.inventory.SearchProductsByIdsList([1,2,3])
+```
+In return
+```
+[status(boolean), message(string), List<ProductCategory>, List<Product>]
+```
 
 - - -
 
