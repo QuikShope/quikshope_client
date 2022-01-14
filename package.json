@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/GiantsMeet/quikshope_client.git"
   },
-  "main": "lib/main.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "npm run dist && npm run uglify",
     "dist": "mkdirp dist && browserify --standalone QuikShopeClient lib/index.js > dist/client.js",
