@@ -1,12 +1,12 @@
 # QuikShope Client SDK
 
-#### List of classes
+#### List of classes availlable in the SDK , which can be returned by functions will be dicussed in the later part
 
  Class Name | Purpose 
  --- | ---
 Config | Hold all the config of project such as API Endpoints and . Also store ***username*** of shop as *static* member which is used by another functions
-AuthenticateUser | It has the functions to handle the OTP verification and generate auth token / generate Customer Object
-Customer | This consists all the information of the customer. This call include functions for update details / fetch all orders / get a particular order details / checkout 
+AuthenticateUser | It has the functions to handle the OTP verification and generate auth token / generate Customer Object [**GLOBAL**]
+Customer | This consists all the information of the customer. This call include functions for update details / fetch all orders / get a particular order details / checkout [**CUSTOMER**]
 Product | All details of an product
 ProductCategory | All detaiks of a product category. It has function to fetch all the products under the category
 OrderStatus| It has two members : status_code, datetime [**ORDER**]
@@ -31,3 +31,13 @@ ShopConfig | Store information of shop like , shop is force closed or not , open
 ShopPromoCode | Holds information for promo code available to apply . It holds the code, discount details and its description [**SHOP**]
 Shop | Main Class which hold all the details related to a shop. [**SHOP**]
 
+### Import Library
+
+In case of NodeJS / Frontend framework , the standard ES5 & ES6 import strategy will work
+```
+const quikshop_client = require("quikshope_client")
+```
+To import directly in HTML, use the cdn link provided below
+```
+<script srdc="https://cdn.jsdelivr.net/gh/GiantsMeet/quikshope_client@main/dist/client.min.js"></script>
+```
