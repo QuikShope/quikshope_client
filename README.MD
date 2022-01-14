@@ -1,8 +1,8 @@
 # QuikShope Client SDK
 
-#### List of classes availlable in the SDK , which can be returned by functions will be dicussed in the later part
+#### `Class definition` availlable in the SDK , which can be returned by functions or used internally will be dicussed in the later part
 
- Class Name | Purpose 
+ Class Name | Purpose
  --- | ---
 Config | Hold all the config of project such as API Endpoints and . Also store ***username*** of shop as *static* member which is used by another functions
 AuthenticateUser | It has the functions to handle the OTP verification and generate auth token / generate Customer Object [**GLOBAL**]
@@ -298,6 +298,20 @@ In return we will get
 - - -
 
 ### Order [Class]
+Data members
+- products [List<Product>]
+- promo_code [null or Instance of PromoCode]
+- latest_status [Instance of OrderStatus]
+- all_statues [List<OrderStatus>]
+- address [String]
+- pincode [String]
+- country [String]
+- country_code [String]
+- home_delivery_charge
+- home_delivery_details [Instance of HomeDelivery]
+- self_pickup_details [Instance of SelfPickup]
+- table_order_details [Instance of TableOrder]
+- advanced_table_order_details [Instance of AdvancedTableOrder]
 
 - - -
 
@@ -359,5 +373,22 @@ In return
 - - -
 
 ### Shop
+Data Members
+- profile [Instance of ShopProfile]
+- contact_information [Instance of ShopContact]
+- address [Instance of ShopAddress]
+- account_details [Instance of ShopAccount]
+- config [Instance of ShopConfig]
+- promo_codes [List<ShopPromoCode>]
 
+Functions
+- `fetch_details()` : This will load all the information regarding that shop.
+```js
+const shop = new client.shop()
+console.log(await shop.fetch_details())
+```
+In return
+```
+[status(boolean), message(string)]
+```
 - - -
