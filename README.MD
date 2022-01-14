@@ -75,9 +75,9 @@ Process flow for authentication
 The 10 digit phone number of customer without country code need to be pass as arguments.
 > Note : If the customer has not any account, account will be created , there is no need to check existance of customer account
 
-	```js
+```js
 const auth = new client.authenticate("9999999999")
-	```
+```
 
 - #### Send OTP
 	```js
@@ -90,9 +90,9 @@ In return , we will receive a list of two items in the below format
 If success is true that's indicate OTP has been sent , in same way we will get message which can be shown to the user
 
 - #### Send OTP
-	```js
+```js
 await auth.sendOtp()
-    ```
+```
 In return , we will receive a list of two items in the below format
 ```
 [success (boolean), message(string)]
@@ -100,9 +100,9 @@ In return , we will receive a list of two items in the below format
 If success is true that's indicate OTP has been sent , in same way we will get message which can be shown to the user
 
 - #### Resend OTP
-	```js
+```js
 await auth.resendOtp()
-    ```
+```
 In return , we will receive a list of two items in the below format
 ```
 [success (boolean), message(string)]
@@ -111,9 +111,9 @@ If success is true that's indicate OTP has been resent , in same way we will get
 
 - #### Verify OTP
 It takes 6 digit otp as parameter
-	```js
+```js
 await auth.verifyOtp("111111")
-    ```
+```
 In return , we will receive a list of two items in the below format
 ```
 [success (boolean), message(string)]
@@ -122,9 +122,9 @@ If success is true that's indicate OTP has been verified so that we can proceed 
 
 
 - #### Generate Auth Token
-	```js
+```js
 await auth.generateToken()
-    ```
+```
 In return , we will receive a list of two items in the below format
 ```
 [success (boolean), message(string), token(string)]
@@ -138,9 +138,9 @@ If success is true that's indicate user has been verified through otp verificati
 
 
 - #### Generate Customer Object
-	```js
+```js
 await auth.generateTokenAndCustomerDetils()
-    ```
+```
 In return , we will receive a list of two items in the below format
 ```
 [success (boolean), message(string), customer(Customer Object)]
