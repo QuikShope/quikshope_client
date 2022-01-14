@@ -203,4 +203,6 @@ In return , we will receive a list of two items in the below format
 ```
 If success is true that's indicating that customer details has been updated successfully , in same way we will get message which can be shown to the user.
 
-
+#### Fetch All Orders
+#### Get Particular Order By ID
+#### Checkout
