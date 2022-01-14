@@ -71,14 +71,6 @@ client.init("shop2")
 ```
 - - -
 
-### Product [Class]
-
-- - -
-
-### ProductCategory [Class]
-
-- - -
-
 ### Authenticate User [Customer]
 Process flow for authentication
 1. Create object of AuthenticateUser
@@ -213,3 +205,26 @@ If success is true that's indicating that customer details has been updated succ
 #### Fetch All Orders
 #### Get Particular Order By ID
 #### Checkout
+
+- - -
+
+
+### Product [Class]
+
+- - -
+
+### ProductCategory [Class]
+
+- - -
+
+### Order [Class]
+
+- - -
+
+### Inventory
+
+- - -
+
+### Shop
+
+- - -
