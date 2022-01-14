@@ -139,10 +139,10 @@ In return , we will receive a list of two items in the below format
 ```
 If success is true that's indicate user has been verified through otp verification and received auth token , in same way we will get message which can be shown to the user. the 3rd parmeter we will receive the Auth Token
 
-	There is various method to store the token in clientside
-	1. Cookie
-	2. LocalStorage
-	3. IndexedDB
+There is various method to store the token in clientside
+1. Cookie
+2. LocalStorage
+3. IndexedDB
 
 
 #### Generate Customer Object
