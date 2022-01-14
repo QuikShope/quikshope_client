@@ -36,7 +36,10 @@ Install by npm
 ```bash
 npm install git@github.com:GiantsMeet/quikshope_client.git
 ```
-To install directly in HTML to use directly, use the cdn link provided below
+
+> If you are not using any frontend framework or nodejs , then prefer to use the below method to import library.
+
+To install directly in HTML, use the cdn link provided below
 ```js
 <script srdc="https://cdn.jsdelivr.net/gh/GiantsMeet/quikshope_client@main/dist/client.min.js"></script>
 ```
@@ -61,3 +64,87 @@ For initialization, the username of the shop needed , that can be found in dashb
 client.init("shop2")
 ```
 
+### Authenticate User [Customer]
+Process flow for authentication
+1. Create object of AuthenticateUser
+1. Send OTP
+2. Verify OTP [If failed, resent OTP]
+3. Generate Auth Token or Generate Customer Object
+
+- ##### Create AuthenticateUser object
+The 10 digit phone number of customer without country code need to be pass as arguments.
+> Note : If the customer has not any account, account will be created , there is no need to check existance of customer account
+
+	```js
+const auth = new client.authenticate("9999999999")
+	```
+
+- #### Send OTP
+	```js
+await auth.sendOtp()
+    ```
+In return , we will receive a list of two items in the below format
+```
+[success (boolean), message(string)]
+```
+If success is true that's indicate OTP has been sent , in same way we will get message which can be shown to the user
+
+- #### Send OTP
+	```js
+await auth.sendOtp()
+    ```
+In return , we will receive a list of two items in the below format
+```
+[success (boolean), message(string)]
+```
+If success is true that's indicate OTP has been sent , in same way we will get message which can be shown to the user
+
+- #### Resend OTP
+	```js
+await auth.resendOtp()
+    ```
+In return , we will receive a list of two items in the below format
+```
+[success (boolean), message(string)]
+```
+If success is true that's indicate OTP has been resent , in same way we will get message which can be shown to the user
+
+- #### Verify OTP
+It takes 6 digit otp as parameter
+	```js
+await auth.verifyOtp("111111")
+    ```
+In return , we will receive a list of two items in the below format
+```
+[success (boolean), message(string)]
+```
+If success is true that's indicate OTP has been verified so that we can proceed for generate auth token or customer object , in same way we will get message which can be shown to the user
+
+
+- #### Generate Auth Token
+	```js
+await auth.generateToken()
+    ```
+In return , we will receive a list of two items in the below format
+```
+[success (boolean), message(string), token(string)]
+```
+If success is true that's indicate user has been verified through otp verification and received auth token , in same way we will get message which can be shown to the user. the 3rd parmeter we will receive the Auth Token
+
+	There is various method to store the token in clientside
+	1. Cookie
+	2. LocalStorage
+	3. IndexedDB
+
+
+- #### Generate Customer Object
+	```js
+await auth.generateTokenAndCustomerDetils()
+    ```
+In return , we will receive a list of two items in the below format
+```
+[success (boolean), message(string), customer(Customer Object)]
+```
+If success is true that's indicate user has been verified through otp verification and received customer object , in same way we will get message which can be shown to the user. If success is false then the customer [3rd parameter] will be *null*
+
+### Customer Object [Detailed]
