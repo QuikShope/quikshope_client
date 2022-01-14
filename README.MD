@@ -155,4 +155,52 @@ In return , we will receive a list of two items in the below format
 ```
 If success is true that's indicate user has been verified through otp verification and received customer object , in same way we will get message which can be shown to the user. If success is false then the customer [3rd parameter] will be *null*
 
-### Customer Object [Detailed]
+- - -
+
+### Customer Object
+The members of teh customer object
+- id
+- name
+- phone_no
+- address
+- pincode
+- country
+- country_code
+- token
+
+#### Intialize a customer object
+To initialize a customer object , the authentication token of the customer needed which have been discussed in **Authenticate User** section
+```js
+const customer = new client.customer("authentication token")
+```
+
+#### Fetch all details of customer from server
+```js
+await customer.fetchDetails()
+```
+In return , we will receive a list of two items in the below format
+```
+[success (boolean), message(string)]
+```
+If success is true that's indicate that customer details has been fetch successfully , in same way we will get message which can be shown to the user.
+
+To get the customer details in JSON format,
+```js
+customer.toJSON()
+```
+
+#### Update Customer Details
+> Note that, Mobile number of customer is not allowed. Only change of name, address, pincode is allowed
+
+```js
+// all 3 parameters are required
+await customer.updateDetails("Tanmoy", "Kolkata", 700032)
+```
+
+In return , we will receive a list of two items in the below format
+```
+[success (boolean), message(string)]
+```
+If success is true that's indicating that customer details has been updated successfully , in same way we will get message which can be shown to the user.
+
+
