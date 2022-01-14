@@ -69,6 +69,13 @@ For initialization, the username of the shop needed , that can be found in dashb
 ```js
 client.init("shop2")
 ```
+- - -
+
+### Product [Class]
+
+- - -
+
+### ProductCategory [Class]
 
 - - -
 
