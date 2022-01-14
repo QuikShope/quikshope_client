@@ -34,7 +34,7 @@ Shop | Main Class which hold all the details related to a shop. [**SHOP**]
 ### Import Library
 
 In case of NodeJS / Frontend framework , the standard ES5 & ES6 import strategy will work
-```
+```js
 // For type "module"
 const client = require("quikshope_client")
 
@@ -42,7 +42,7 @@ const client = require("quikshope_client")
 import client from "quikshope_client"
 ```
 To import directly in HTML, use the cdn link provided below
-```
+```js
 <script srdc="https://cdn.jsdelivr.net/gh/GiantsMeet/quikshope_client@main/dist/client.min.js"></script>
 ```
 
