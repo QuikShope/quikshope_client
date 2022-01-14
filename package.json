@@ -9,6 +9,7 @@
   },
   "main": "lib/index.js",
   "scripts": {
+    "gitpush" : "git add . && git commit -m \"Git push\" && git push",
     "build": "npm run dist && npm run uglify",
     "dist": "mkdirp dist && browserify --standalone QuikShopeClient lib/index.js > dist/client.js",
     "uglify": "uglifyjs dist/client.js > dist/client.min.js"
