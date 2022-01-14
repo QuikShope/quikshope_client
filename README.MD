@@ -64,6 +64,8 @@ For initialization, the username of the shop needed , that can be found in dashb
 client.init("shop2")
 ```
 
+- - -
+
 ### Authenticate User [Customer]
 Process flow for authentication
 1. Create object of AuthenticateUser
