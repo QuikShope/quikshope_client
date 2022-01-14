@@ -35,9 +35,14 @@ Shop | Main Class which hold all the details related to a shop. [**SHOP**]
 
 In case of NodeJS / Frontend framework , the standard ES5 & ES6 import strategy will work
 ```
-const quikshop_client = require("quikshope_client")
+// For type "module"
+const client = require("quikshope_client")
+
+// For type "commonjs"
+import client from "quikshope_client"
 ```
 To import directly in HTML, use the cdn link provided below
 ```
 <script srdc="https://cdn.jsdelivr.net/gh/GiantsMeet/quikshope_client@main/dist/client.min.js"></script>
 ```
+
