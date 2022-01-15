@@ -179,7 +179,7 @@ class Config{
         if(Config.shop_username.trim().length == 0){
             console.log("Please set the username of shop before performing any action .. To learn more go to this link : <LINK>");
         }
-        return "http://" + Config.shop_username + "." + this.server_base_url + ":8000";
+        return "http://" + Config.shop_username + "." + this.server_base_url;
     }
 
 }
