@@ -1,4 +1,50 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.QuikShopeClient = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+/**
+ * The code was extracted from:
+ * https://github.com/davidchambers/Base64.js
+ */
+
+ var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+ function InvalidCharacterError(message) {
+     this.message = message;
+ }
+ 
+ InvalidCharacterError.prototype = new Error();
+ InvalidCharacterError.prototype.name = "InvalidCharacterError";
+ 
+ function polyfill(input) {
+     var str = String(input).replace(/=+$/, "");
+     if (str.length % 4 == 1) {
+         throw new InvalidCharacterError(
+             "'atob' failed: The string to be decoded is not correctly encoded."
+         );
+     }
+     for (
+         // initialize result and counters
+         var bc = 0, bs, buffer, idx = 0, output = "";
+         // get next character
+         (buffer = str.charAt(idx++));
+         // character found in table? initialize bit storage and add its ascii value;
+         ~buffer &&
+         ((bs = bc % 4 ? bs * 64 + buffer : buffer),
+             // and if not first of each 4 characters,
+             // convert the first 8 bits to one ascii character
+             bc++ % 4) ?
+         (output += String.fromCharCode(255 & (bs >> ((-2 * bc) & 6)))) :
+         0
+     ) {
+         // try to find character in table (0-63, not found => -1)
+         buffer = chars.indexOf(buffer);
+     }
+     return output;
+ }
+ 
+ module.exports =  (typeof window !== "undefined" &&
+     window.atob &&
+     window.atob.bind(window)) ||
+ polyfill;
+},{}],2:[function(require,module,exports){
 const _config = require("./config")
 const config = new _config();
 const axios = require("axios").default;
@@ -151,7 +197,48 @@ class AuthenticateUser{
 }
 
 module.exports = AuthenticateUser
-},{"./config":2,"axios":9,"qs":50}],2:[function(require,module,exports){
+},{"./config":4,"axios":11,"qs":52}],3:[function(require,module,exports){
+/*
+* This code is extracted from 
+* https://github.com/auth0/jwt-decode/blob/master/lib/base64_url_decode.js
+*/
+
+const atob = require("./atob")
+
+function b64DecodeUnicode(str) {
+    return decodeURIComponent(
+        atob(str).replace(/(.)/g, function(m, p) {
+            var code = p.charCodeAt(0).toString(16).toUpperCase();
+            if (code.length < 2) {
+                code = "0" + code;
+            }
+            return "%" + code;
+        })
+    );
+}
+
+module.exports =  function(str) {
+    var output = str.replace(/-/g, "+").replace(/_/g, "/");
+    switch (output.length % 4) {
+        case 0:
+            break;
+        case 2:
+            output += "==";
+            break;
+        case 3:
+            output += "=";
+            break;
+        default:
+            throw "Illegal base64url string!";
+    }
+
+    try {
+        return b64DecodeUnicode(output);
+    } catch (err) {
+        return atob(output);
+    }
+}
+},{"./atob":1}],4:[function(require,module,exports){
 class Config{
     server_endpoint = "http://quikshope.com";
     server_base_url = "quikshope.com";
@@ -185,7 +272,7 @@ class Config{
 }
 
 module.exports = Config
-},{}],3:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 const _config = require("./config")
 const config = new _config();
 
@@ -207,6 +294,15 @@ class Customer{
 
     constructor(token){
         this.token = token;
+        try {
+            const parsed_json = utils.parse_jwt(token);
+            const data = parsed_json?.details??{}
+            this.importJSON(data)
+            console.log("Token imported successfully !");
+        } catch (error) {
+            console.log(error);
+            console.log("Token has assigned to Customer but data can't be decode. The token maybe corrupted or expired.")
+        }
     }
 
     importJSON(json){
@@ -374,10 +470,12 @@ class Customer{
 }
 
 module.exports = Customer
-},{"./config":2,"./helper":4,"./order":7,"axios":9,"qs":50}],4:[function(require,module,exports){
+},{"./config":4,"./helper":6,"./order":9,"axios":11,"qs":52}],6:[function(require,module,exports){
 const config = require("./config");
+const base64_url_decode = require("./base64_url_decode");
 
 let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
+
 const isDate = (date) => {
     return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
 }
@@ -534,12 +632,19 @@ function verify_checkout_payload(shop, products_cart_map, promo_code, delivery_m
     return [true, "Checkout payload verified !", data]
 }
 
+function parse_jwt (token) {
+    return JSON.parse(base64_url_decode(token.split(".")[1]));
+};
+
+function is_node_js() { return typeof module === "object" && typeof module.exports === "object"; }
+
 
 module.exports = {
     convert_images_to_preferred_dimensions : convert_images_to_preferred_dimensions,
-    verify_checkout_payload : verify_checkout_payload
+    verify_checkout_payload : verify_checkout_payload,
+    parse_jwt : parse_jwt
 }
-},{"./config":2}],5:[function(require,module,exports){
+},{"./base64_url_decode":3,"./config":4}],7:[function(require,module,exports){
 const _config = require("./config")
 const config = new _config();
 
@@ -565,7 +670,7 @@ module.exports = {
 }
 
 
-},{"./auth":1,"./config":2,"./customer":3,"./helper":4,"./inventory":6,"./shop":8}],6:[function(require,module,exports){
+},{"./auth":2,"./config":4,"./customer":5,"./helper":6,"./inventory":8,"./shop":10}],8:[function(require,module,exports){
 const _config = require("./config")
 const config = new _config();
 
@@ -783,7 +888,7 @@ module.exports = {
     SearchProducts : searchProducts,
     SearchProductsByIdsList : searchProductsByIdsList
 }
-},{"./config":2,"./helper":4,"axios":9}],7:[function(require,module,exports){
+},{"./config":4,"./helper":6,"axios":11}],9:[function(require,module,exports){
 const Product = require("./inventory").Product;
 
 class OrderStatus{
@@ -915,7 +1020,7 @@ class Order{
 
 module.exports = Order
 
-},{"./inventory":6}],8:[function(require,module,exports){
+},{"./inventory":8}],10:[function(require,module,exports){
 const _config = require("./config")
 const config = new _config();
 const axios = require("axios").default;
@@ -1090,9 +1195,9 @@ class Shop{
 
 
 module.exports = Shop
-},{"./config":2,"axios":9,"qs":50}],9:[function(require,module,exports){
+},{"./config":4,"axios":11,"qs":52}],11:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":11}],10:[function(require,module,exports){
+},{"./lib/axios":13}],12:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1306,7 +1411,7 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-},{"../cancel/Cancel":12,"../core/buildFullPath":17,"../core/createError":18,"../defaults":24,"./../core/settle":22,"./../helpers/buildURL":27,"./../helpers/cookies":29,"./../helpers/isURLSameOrigin":32,"./../helpers/parseHeaders":34,"./../utils":37}],11:[function(require,module,exports){
+},{"../cancel/Cancel":14,"../core/buildFullPath":19,"../core/createError":20,"../defaults":26,"./../core/settle":24,"./../helpers/buildURL":29,"./../helpers/cookies":31,"./../helpers/isURLSameOrigin":34,"./../helpers/parseHeaders":36,"./../utils":39}],13:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -1365,7 +1470,7 @@ module.exports = axios;
 // Allow use of default import syntax in TypeScript
 module.exports.default = axios;
 
-},{"./cancel/Cancel":12,"./cancel/CancelToken":13,"./cancel/isCancel":14,"./core/Axios":15,"./core/mergeConfig":21,"./defaults":24,"./env/data":25,"./helpers/bind":26,"./helpers/isAxiosError":31,"./helpers/spread":35,"./utils":37}],12:[function(require,module,exports){
+},{"./cancel/Cancel":14,"./cancel/CancelToken":15,"./cancel/isCancel":16,"./core/Axios":17,"./core/mergeConfig":23,"./defaults":26,"./env/data":27,"./helpers/bind":28,"./helpers/isAxiosError":33,"./helpers/spread":37,"./utils":39}],14:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1386,7 +1491,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 var Cancel = require('./Cancel');
@@ -1507,14 +1612,14 @@ CancelToken.source = function source() {
 
 module.exports = CancelToken;
 
-},{"./Cancel":12}],14:[function(require,module,exports){
+},{"./Cancel":14}],16:[function(require,module,exports){
 'use strict';
 
 module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1664,7 +1769,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = Axios;
 
-},{"../helpers/buildURL":27,"../helpers/validator":36,"./../utils":37,"./InterceptorManager":16,"./dispatchRequest":19,"./mergeConfig":21}],16:[function(require,module,exports){
+},{"../helpers/buildURL":29,"../helpers/validator":38,"./../utils":39,"./InterceptorManager":18,"./dispatchRequest":21,"./mergeConfig":23}],18:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1720,7 +1825,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":37}],17:[function(require,module,exports){
+},{"./../utils":39}],19:[function(require,module,exports){
 'use strict';
 
 var isAbsoluteURL = require('../helpers/isAbsoluteURL');
@@ -1742,7 +1847,7 @@ module.exports = function buildFullPath(baseURL, requestedURL) {
   return requestedURL;
 };
 
-},{"../helpers/combineURLs":28,"../helpers/isAbsoluteURL":30}],18:[function(require,module,exports){
+},{"../helpers/combineURLs":30,"../helpers/isAbsoluteURL":32}],20:[function(require,module,exports){
 'use strict';
 
 var enhanceError = require('./enhanceError');
@@ -1762,7 +1867,7 @@ module.exports = function createError(message, config, code, request, response) 
   return enhanceError(error, config, code, request, response);
 };
 
-},{"./enhanceError":20}],19:[function(require,module,exports){
+},{"./enhanceError":22}],21:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1851,7 +1956,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/Cancel":12,"../cancel/isCancel":14,"../defaults":24,"./../utils":37,"./transformData":23}],20:[function(require,module,exports){
+},{"../cancel/Cancel":14,"../cancel/isCancel":16,"../defaults":26,"./../utils":39,"./transformData":25}],22:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1896,7 +2001,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   return error;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -1997,7 +2102,7 @@ module.exports = function mergeConfig(config1, config2) {
   return config;
 };
 
-},{"../utils":37}],22:[function(require,module,exports){
+},{"../utils":39}],24:[function(require,module,exports){
 'use strict';
 
 var createError = require('./createError');
@@ -2024,7 +2129,7 @@ module.exports = function settle(resolve, reject, response) {
   }
 };
 
-},{"./createError":18}],23:[function(require,module,exports){
+},{"./createError":20}],25:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2048,7 +2153,7 @@ module.exports = function transformData(data, headers, fns) {
   return data;
 };
 
-},{"./../defaults":24,"./../utils":37}],24:[function(require,module,exports){
+},{"./../defaults":26,"./../utils":39}],26:[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -2186,11 +2291,11 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 }).call(this)}).call(this,require('_process'))
-},{"./adapters/http":10,"./adapters/xhr":10,"./core/enhanceError":20,"./helpers/normalizeHeaderName":33,"./utils":37,"_process":48}],25:[function(require,module,exports){
+},{"./adapters/http":12,"./adapters/xhr":12,"./core/enhanceError":22,"./helpers/normalizeHeaderName":35,"./utils":39,"_process":50}],27:[function(require,module,exports){
 module.exports = {
   "version": "0.24.0"
 };
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -2203,7 +2308,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2275,7 +2380,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-},{"./../utils":37}],28:[function(require,module,exports){
+},{"./../utils":39}],30:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2291,7 +2396,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     : baseURL;
 };
 
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2346,7 +2451,7 @@ module.exports = (
     })()
 );
 
-},{"./../utils":37}],30:[function(require,module,exports){
+},{"./../utils":39}],32:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2362,7 +2467,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2375,7 +2480,7 @@ module.exports = function isAxiosError(payload) {
   return (typeof payload === 'object') && (payload.isAxiosError === true);
 };
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2445,7 +2550,7 @@ module.exports = (
     })()
 );
 
-},{"./../utils":37}],33:[function(require,module,exports){
+},{"./../utils":39}],35:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -2459,7 +2564,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
   });
 };
 
-},{"../utils":37}],34:[function(require,module,exports){
+},{"../utils":39}],36:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2514,7 +2619,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":37}],35:[function(require,module,exports){
+},{"./../utils":39}],37:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2543,7 +2648,7 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 var VERSION = require('../env/data').version;
@@ -2627,7 +2732,7 @@ module.exports = {
   validators: validators
 };
 
-},{"../env/data":25}],37:[function(require,module,exports){
+},{"../env/data":27}],39:[function(require,module,exports){
 'use strict';
 
 var bind = require('./helpers/bind');
@@ -2978,9 +3083,9 @@ module.exports = {
   stripBOM: stripBOM
 };
 
-},{"./helpers/bind":26}],38:[function(require,module,exports){
+},{"./helpers/bind":28}],40:[function(require,module,exports){
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -2997,7 +3102,7 @@ module.exports = function callBoundIntrinsic(name, allowMissing) {
 	return intrinsic;
 };
 
-},{"./":40,"get-intrinsic":43}],40:[function(require,module,exports){
+},{"./":42,"get-intrinsic":45}],42:[function(require,module,exports){
 'use strict';
 
 var bind = require('function-bind');
@@ -3046,7 +3151,7 @@ if ($defineProperty) {
 	module.exports.apply = applyBind;
 }
 
-},{"function-bind":42,"get-intrinsic":43}],41:[function(require,module,exports){
+},{"function-bind":44,"get-intrinsic":45}],43:[function(require,module,exports){
 'use strict';
 
 /* eslint no-invalid-this: 1 */
@@ -3100,14 +3205,14 @@ module.exports = function bind(that) {
     return bound;
 };
 
-},{}],42:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict';
 
 var implementation = require('./implementation');
 
 module.exports = Function.prototype.bind || implementation;
 
-},{"./implementation":41}],43:[function(require,module,exports){
+},{"./implementation":43}],45:[function(require,module,exports){
 'use strict';
 
 var undefined;
@@ -3439,7 +3544,7 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 	return value;
 };
 
-},{"function-bind":42,"has":46,"has-symbols":44}],44:[function(require,module,exports){
+},{"function-bind":44,"has":48,"has-symbols":46}],46:[function(require,module,exports){
 'use strict';
 
 var origSymbol = typeof Symbol !== 'undefined' && Symbol;
@@ -3454,7 +3559,7 @@ module.exports = function hasNativeSymbols() {
 	return hasSymbolSham();
 };
 
-},{"./shams":45}],45:[function(require,module,exports){
+},{"./shams":47}],47:[function(require,module,exports){
 'use strict';
 
 /* eslint complexity: [2, 18], max-statements: [2, 33] */
@@ -3498,14 +3603,14 @@ module.exports = function hasSymbols() {
 	return true;
 };
 
-},{}],46:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 var bind = require('function-bind');
 
 module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
 
-},{"function-bind":42}],47:[function(require,module,exports){
+},{"function-bind":44}],49:[function(require,module,exports){
 var hasMap = typeof Map === 'function' && Map.prototype;
 var mapSizeDescriptor = Object.getOwnPropertyDescriptor && hasMap ? Object.getOwnPropertyDescriptor(Map.prototype, 'size') : null;
 var mapSize = hasMap && mapSizeDescriptor && typeof mapSizeDescriptor.get === 'function' ? mapSizeDescriptor.get : null;
@@ -4018,7 +4123,7 @@ function arrObjKeys(obj, inspect) {
     return xs;
 }
 
-},{"./util.inspect":38}],48:[function(require,module,exports){
+},{"./util.inspect":40}],50:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -4204,7 +4309,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],49:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 
 var replace = String.prototype.replace;
@@ -4229,7 +4334,7 @@ module.exports = {
     RFC3986: Format.RFC3986
 };
 
-},{}],50:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 'use strict';
 
 var stringify = require('./stringify');
@@ -4242,7 +4347,7 @@ module.exports = {
     stringify: stringify
 };
 
-},{"./formats":49,"./parse":51,"./stringify":52}],51:[function(require,module,exports){
+},{"./formats":51,"./parse":53,"./stringify":54}],53:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -4507,7 +4612,7 @@ module.exports = function (str, opts) {
     return utils.compact(obj);
 };
 
-},{"./utils":53}],52:[function(require,module,exports){
+},{"./utils":55}],54:[function(require,module,exports){
 'use strict';
 
 var getSideChannel = require('side-channel');
@@ -4826,7 +4931,7 @@ module.exports = function (object, opts) {
     return joined.length > 0 ? prefix + joined : '';
 };
 
-},{"./formats":49,"./utils":53,"side-channel":54}],53:[function(require,module,exports){
+},{"./formats":51,"./utils":55,"side-channel":56}],55:[function(require,module,exports){
 'use strict';
 
 var formats = require('./formats');
@@ -5080,7 +5185,7 @@ module.exports = {
     merge: merge
 };
 
-},{"./formats":49}],54:[function(require,module,exports){
+},{"./formats":51}],56:[function(require,module,exports){
 'use strict';
 
 var GetIntrinsic = require('get-intrinsic');
@@ -5206,5 +5311,5 @@ module.exports = function getSideChannel() {
 	return channel;
 };
 
-},{"call-bind/callBound":39,"get-intrinsic":43,"object-inspect":47}]},{},[5])(5)
+},{"call-bind/callBound":41,"get-intrinsic":45,"object-inspect":49}]},{},[7])(7)
 });
