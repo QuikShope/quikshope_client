@@ -49,6 +49,8 @@ const _config = require("./config")
 const config = new _config();
 const axios = require("axios").default;
 const qs = require('qs');
+const Customer = require("./customer");
+
 
 class AuthenticateUser{
     mobile_number = "";
@@ -197,7 +199,7 @@ class AuthenticateUser{
 }
 
 module.exports = AuthenticateUser
-},{"./config":4,"axios":11,"qs":52}],3:[function(require,module,exports){
+},{"./config":4,"./customer":5,"axios":11,"qs":52}],3:[function(require,module,exports){
 /*
 * This code is extracted from 
 * https://github.com/auth0/jwt-decode/blob/master/lib/base64_url_decode.js
