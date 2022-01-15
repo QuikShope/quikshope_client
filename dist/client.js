@@ -129,7 +129,7 @@ class AuthenticateUser{
         }
 
           if(requestSuccessful){
-              this.token = response?.data.payload.token;
+              this.otp_token = response?.data.payload.token;
           }
 
           const message = requestSuccessful ? response?.data.message : response?.data.error ;
