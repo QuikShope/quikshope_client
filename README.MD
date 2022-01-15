@@ -36,7 +36,7 @@ Shop | Main Class which hold all the details related to a shop. [**SHOP**]
 ### Install QuikShope Client Library
 Install by npm
 ```bash
-npm install git@github.com:GiantsMeet/quikshope_client.git
+npm i quikshope_client
 ```
 
 > If you are not using any frontend framework or nodejs , then prefer to use the below method to import library.
