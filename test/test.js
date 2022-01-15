@@ -1,6 +1,6 @@
 const QuikShope = require("../lib/index");
 const shop = new QuikShope.shop();
-const customer = new QuikShope.customer("eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI0ODQ2ZTllMi1hZmVkLTQ4Y2ItYmFhNS02ODgzY2I3YzEwMzkiLCJkZXRhaWxzIjp7Im5hbWUiOiJUYW5tb3kgU2Fya2FyIiwicGhvbmVObyI6Ijk2NDE4MzE3MDYiLCJpZCI6IjQ4NDZlOWUyLWFmZWQtNDhjYi1iYWE1LTY4ODNjYjdjMTAzOSIsImFkZHJlc3MiOnsiYWRkcmVzcyI6IlBhbGl0cGFyYSwgV2VzdCBCZW5nYWwiLCJwaW5jb2RlIjoiNzQxMTI3IiwiY291bnRyeSI6IkluZGlhIiwiY291bnRyeUNvZGUiOiJJTiJ9fSwiZXhwIjoxNjczNDM5NDU1fQ.etsWFB4C-NzhplYWKLWntyiohcDC2_Bk4pFMXD8AB8w");
+const customer = new QuikShope.customer("AUTH TOKEN");
 const inventory = require("../lib/inventory");
 
 QuikShope.init("shop1");
