@@ -43,7 +43,7 @@ npm install git@github.com:GiantsMeet/quikshope_client.git
 
 To install directly in HTML, use the cdn link provided below
 ```js
-<script srdc="https://cdn.jsdelivr.net/gh/GiantsMeet/quikshope_client@main/dist/client.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/GiantsMeet/quikshope_client@main/dist/client.min.js"></script>
 ```
 
 - - -
